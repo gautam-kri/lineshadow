@@ -303,6 +303,7 @@ eval/                 the only layer allowed to read both sides
 
 app/                  Streamlit operator console
 api/                  thin FastAPI wrapper (presentation layer; no engine logic)
+frontend/             Next.js operator console (Zone B); talks to api/ only
 scripts/              calibrate.py · train_l3.py · capture_screenshots.py
 config/               line · twin · eval · scenarios/{tuning,holdout}
 tests/                51 tests

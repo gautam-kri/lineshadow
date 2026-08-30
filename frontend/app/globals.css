@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Ninja design tokens.
+
+   The palette is carried over verbatim from app/theme.py and app/components.py
+   so the Next.js console, the Streamlit console and the charts in the README are
+   demonstrably one design rather than three that happen to look similar. The
+   severity scale in particular is the same scale the twin reasons with -- do not
+   re-pick these values here.
+
+   MOTION POLICY (read before adding any animation)
+   Zone A (the narrative shell, /) follows motion-design's Premium archetype:
+   350-600ms, cubic-bezier(0.4, 0, 0.2, 1), no overshoot. It is seen once per
+   viewer, so cinematic is correct there.
+   Zone B (this console, /console) follows the animate skill's UI rule instead:
+   under 300ms, and most feedback well under that. It is seen continuously during
+   real use, where anything cinematic becomes an obstacle.
+   These two budgets genuinely conflict. That is deliberate. Do not "fix" it by
+   unifying them.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* surfaces */
+  --nj-bg: #0b0e13;
+  --nj-elev: #12161d;
+  --nj-input: #161b23;
+  --nj-hover: #1a2029;
+  --nj-border: #1f2630;
+  --nj-border-strong: #2c3644;
+
+  /* text */
+  --nj-text: #e8ecf1;
+  --nj-dim: #8d9aab;
+  --nj-mute: #5b6b7a;
+
+  /* interactive chrome only -- never a severity signal */
+  --nj-accent: #6e9fe0;
+  --nj-accent-dim: #3e5f87;
+
+  /* severity scale, shared with the twin */
+  --nj-healthy: #2f7d46;
+  --nj-caution: #8fbf3f;
+  --nj-warning: #e8b62c;
+  --nj-elevated: #e2761f;
+  --nj-critical: #c0392b;
+  --nj-unseen: #5b6b7a;
+
+  /* chart furniture */
+  --nj-grid: #1a212b;
+  --nj-band-direct: #4a5a6e;
+  --nj-band-inferred: #8296af; /* brighter on purpose: the wider band is the point */
+}
+
+@theme inline {
+  --color-bg: var(--nj-bg);
+  --color-elev: var(--nj-elev);
+  --color-input: var(--nj-input);
+  --color-hover: var(--nj-hover);
+  --color-line: var(--nj-border);
+  --color-line-strong: var(--nj-border-strong);
+
+  --color-fg: var(--nj-text);
+  --color-dim: var(--nj-dim);
+  --color-mute: var(--nj-mute);
+
+  --color-accent: var(--nj-accent);
+  --color-accent-dim: var(--nj-accent-dim);
+
+  --color-healthy: var(--nj-healthy);
+  --color-caution: var(--nj-caution);
+  --color-warning: var(--nj-warning);
+  --color-elevated: var(--nj-elevated);
+  --color-critical: var(--nj-critical);
+  --color-unseen: var(--nj-unseen);
+
+  /* Display face carries the Zone A hero and the big count-up numbers.
+     UI face is tuned for legibility at 12-14px under sustained reading, which
+     is what Zone B actually needs. */
+  --font-display: var(--font-display), "SF Pro Display", -apple-system, sans-serif;
+  --font-sans: var(--font-ui), "SF Pro Text", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, "SF Mono", Consolas, monospace;
+}
+
+html,
+body {
+  background: var(--nj-bg);
+  color: var(--nj-text);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* A monitoring readout whose digits change width as they update reads as
+   sloppy. Every number in this app is tabular. */
+.tnum,
+input[type="range"],
+table {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Section headings read as instrument-panel labels, not document headings. */
+.nj-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.105em;
+  color: var(--nj-dim);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #232c38;
+  border-radius: 6px;
+  border: 2px solid var(--nj-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #303b4a;
+}
+
+/* Focus is always visible; Zone B is keyboard-operable throughout. */
+:focus-visible {
+  outline: 2px solid var(--nj-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Range input, themed to match the rest of the console. */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: var(--nj-border-strong);
+  border-radius: 2px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--nj-accent);
+  cursor: pointer;
+  border: 2px solid var(--nj-bg);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--nj-accent);
+  cursor: pointer;
+  border: 2px solid var(--nj-bg);
+}
