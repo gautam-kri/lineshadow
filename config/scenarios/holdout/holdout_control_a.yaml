@@ -1,0 +1,7 @@
+scenario_id: holdout_control_a
+split: holdout
+seed: 9010
+horizon_s: 54000
+description: SEALED control. No fault; every alert here is a false alarm.
+fault:
+  family: none

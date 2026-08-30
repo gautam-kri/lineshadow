@@ -1,0 +1,7 @@
+scenario_id: tuning_control_b
+split: tuning
+seed: 1011
+horizon_s: 54000
+description: Control run, no fault.
+fault:
+  family: none

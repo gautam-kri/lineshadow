@@ -1,0 +1,15 @@
+# Base theme. app/theme.py layers the full design system on top of this; these
+# values exist so Streamlit's own chrome paints correctly on first frame,
+# before the injected stylesheet applies.
+[theme]
+base = "dark"
+primaryColor = "#6E9FE0"
+backgroundColor = "#0B0E13"
+secondaryBackgroundColor = "#12161D"
+textColor = "#E8ECF1"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

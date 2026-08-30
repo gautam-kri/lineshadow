@@ -1,0 +1,14 @@
+scenario_id: tuning_torque_drift_s21
+split: tuning
+seed: 1005
+horizon_s: 54000
+description: Torque-mean drift with no cycle-time effect; forms no queue, scored onset-relative.
+fault:
+  family: drift
+  station: 21
+  onset_s: 12600
+  signal: torque
+  shape: linear
+  magnitude_pct: 0
+  ramp_units: 120
+  torque_shift_sigma: 2.8

@@ -1,0 +1,13 @@
+scenario_id: tuning_slowdown_s31
+split: tuning
+seed: 1003
+horizon_s: 54000
+description: Intermittent stochastic slowdowns on the final-assembly bottleneck.
+fault:
+  family: slowdown
+  station: 31
+  onset_s: 14400
+  window_s: 16200
+  probability: 0.2
+  multiplier_min: 2.0
+  multiplier_max: 3.0

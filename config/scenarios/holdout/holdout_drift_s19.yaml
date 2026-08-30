@@ -1,0 +1,13 @@
+scenario_id: holdout_drift_s19
+split: holdout
+seed: 9001
+horizon_s: 54000
+description: SEALED. Cycle-time drift at an instrumented paint-zone station.
+fault:
+  family: drift
+  station: 19
+  onset_s: 13500
+  signal: cycle_time
+  shape: linear
+  magnitude_pct: 38
+  ramp_units: 100

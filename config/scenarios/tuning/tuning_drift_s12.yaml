@@ -1,0 +1,13 @@
+scenario_id: tuning_drift_s12
+split: tuning
+seed: 1001
+horizon_s: 54000
+description: Progressive cycle-time drift on the body-shop bottleneck (instrumented).
+fault:
+  family: drift
+  station: 12
+  onset_s: 12600
+  signal: cycle_time
+  shape: linear
+  magnitude_pct: 22
+  ramp_units: 110

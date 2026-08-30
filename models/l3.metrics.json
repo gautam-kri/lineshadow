@@ -1,0 +1,28 @@
+{
+  "n_train": 3365,
+  "n_test": 1122,
+  "positive_rate": 0.0553,
+  "roc_auc": 0.907,
+  "average_precision": 0.3856,
+  "feature_importance": {
+    "max_abs_z": 0.0724,
+    "mean_abs_z": 0.0831,
+    "n_stations_over_2_sigma": 0.0013,
+    "suspect_station_shift": 0.4512,
+    "unsupervised_risk": 0.3919
+  },
+  "trained_from": [
+    "tuning_control_a",
+    "tuning_control_b",
+    "tuning_drift_mild_s33",
+    "tuning_drift_s12",
+    "tuning_drift_s27_uninstr",
+    "tuning_quality_s08",
+    "tuning_slowdown_s31",
+    "tuning_torque_drift_s21"
+  ],
+  "seed_range_used": [
+    1000,
+    1999
+  ]
+}

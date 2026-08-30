@@ -1,0 +1,4 @@
+# Docs-only tooling. Not needed to run Ninja.
+# Regenerates the README screenshots from the live app:
+#   python scripts/capture_screenshots.py
+playwright==1.49.1

@@ -1,0 +1,12 @@
+# Force LF in the working tree on every platform.
+#
+# This is load-bearing, not cosmetic. The freeze protocol hashes the raw bytes of
+# config/twin.yaml (see eval/freeze_thresholds.py), and the simulator's
+# determinism guarantee depends on byte-identical output. If git normalised line
+# endings to CRLF on a Windows checkout, the config hash would differ from the
+# frozen record and `python -m eval.run_holdout` would correctly -- but very
+# confusingly -- refuse to run on a fresh clone.
+* text=auto eol=lf
+
+*.png    binary
+*.joblib binary

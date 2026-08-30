@@ -1,0 +1,13 @@
+scenario_id: tuning_drift_s27_uninstr
+split: tuning
+seed: 1002
+horizon_s: 54000
+description: Cycle-time drift on an UNINSTRUMENTED station; only inferable from neighbour timing.
+fault:
+  family: drift
+  station: 27
+  onset_s: 12600
+  signal: cycle_time
+  shape: linear
+  magnitude_pct: 36
+  ramp_units: 90

@@ -1,0 +1,19 @@
+# Evaluation protocol. Deliberately NOT part of the frozen twin config: freezing
+# the detector is the integrity claim, and the scoring rule has to stay auditable
+# and separate from it.
+eval:
+  # An alert is a true positive if it names the faulted station or an immediate
+  # neighbour AND fires inside the scoring window. An alert before fault onset is
+  # a false positive, not an early win -- otherwise a detector that alerted
+  # constantly would score perfect lead time.
+  station_tolerance: 1
+  match_margin_s: 900        # window extends this far past queue formation (15 min)
+
+  # Faults that never form a queue have no queue-formation reference, so they are
+  # scored against onset instead, over this window, and reported in their own
+  # column. The two reference points are never mixed into one aggregate.
+  onset_window_s: 5400       # 90 min
+
+  shift_s: 27000             # one shift = 7.5 h, for false-alarms-per-shift
+  sweep_points: 12
+  confidence_level: 0.95

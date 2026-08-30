@@ -1,0 +1,7 @@
+scenario_id: holdout_control_b
+split: holdout
+seed: 9011
+horizon_s: 54000
+description: SEALED control. No fault.
+fault:
+  family: none

@@ -1,0 +1,307 @@
+% Ninja -- Round 2 demo video script
+% Compile with: pdflatex demo_script.tex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.1cm]{geometry}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+% ---------------------------------------------------------------- palette
+\definecolor{ink}{HTML}{14181F}
+\definecolor{dim}{HTML}{5B6B7A}
+\definecolor{accent}{HTML}{2F6FB5}
+\definecolor{critical}{HTML}{C0392B}
+\definecolor{healthy}{HTML}{2F7D46}
+\definecolor{rulegrey}{HTML}{D3D9E0}
+\definecolor{shell}{HTML}{F4F6F8}
+
+\color{ink}
+
+% ---------------------------------------------------------------- code
+\lstdefinestyle{shellstyle}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{shell},
+  frame=leftline,
+  framerule=1.6pt,
+  rulecolor=\color{accent},
+  framesep=7pt,
+  xleftmargin=10pt,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  aboveskip=8pt,
+  belowskip=8pt,
+}
+\lstset{style=shellstyle}
+
+% ---------------------------------------------------------------- beats
+\newcommand{\beat}[3]{%
+  \vspace{9pt}%
+  \noindent{\color{rulegrey}\rule{\linewidth}{0.6pt}}\\[3pt]
+  \noindent{\ttfamily\bfseries\color{accent}#1}\quad{\bfseries\large #2}%
+  \if\relax\detokenize{#3}\relax\else\\[1pt]{\small\color{dim}#3}\fi
+  \par\vspace{5pt}%
+}
+\newcommand{\visual}[1]{\noindent{\small\textbf{\color{dim}VISUAL}\quad #1}\par\vspace{3pt}}
+\newcommand{\action}[1]{\noindent{\small\textbf{\color{dim}ON SCREEN}\quad #1}\par\vspace{3pt}}
+\newcommand{\vo}[1]{\vspace{2pt}\noindent\begin{minipage}{\linewidth}%
+  \small\textbf{\color{dim}VO}\quad\itshape #1\end{minipage}\par\vspace{4pt}}
+\newcommand{\warn}[1]{\vspace{3pt}\noindent\fcolorbox{critical}{white}{%
+  \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}%
+  \small\textbf{\color{critical}CAREFUL}\quad #1\end{minipage}}\par\vspace{4pt}}
+
+\titleformat{\section}{\large\bfseries}{}{0pt}{}
+\setlength{\parindent}{0pt}
+
+% ================================================================
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Ninja — Round 2 Demo Video Script}\\[5pt]
+  {\color{dim}Target runtime $\approx$ 4:10 \quad|\quad screen recording + voiceover}\\[3pt]
+  {\small\color{dim}Every figure below is taken from the built prototype:
+  \texttt{reports/holdout\_report.md} and \texttt{reports/holdout\_results.json}.
+  Nothing is invented for the video.}
+\end{center}
+
+\vspace{6pt}
+\noindent\fcolorbox{rulegrey}{shell}{%
+\begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule}
+\small
+\textbf{Three corrections from the previous draft.} Each was a factual error against the
+actual build.
+\begin{enumerate}[leftmargin=14pt,itemsep=2pt,topsep=3pt]
+  \item \textbf{The uninstrumented station is 34, not 12.} Station 12 \emph{has}
+  sensors. The 14 unseen stations are 3, 5, 7, 11, 14, 17, 22, 25, 27, 29, 34,
+  36, 37, 39. Naming station 12 as sensorless on camera is the kind of error a
+  judge who opened \texttt{config/line.yaml} would catch.
+  \item \textbf{\texttt{run\_demo.py} does not print the holdout numbers.} It
+  prints \textsc{demo scorecard (tuning split)} — development figures, and it
+  says so on screen. The sealed numbers come from
+  \texttt{python -m eval.run\_holdout}. The old script narrated holdout results
+  over tuning output. Now split into two beats.
+  \item \textbf{No supply-chain dataset is currently shipped.} \texttt{data/} has
+  no CSV, so \texttt{config/line.yaml} records \texttt{source: defaults}. Claiming
+  it \emph{is} calibrated against real data overstates it. Corrected wording is
+  in the honesty beat.
+\end{enumerate}
+\end{minipage}}
+
+% ================================================================
+\beat{0:00–0:18}{Cold open — show it run before explaining it}{}
+\visual{Terminal, empty. Type the command live.}
+\begin{lstlisting}
+pip install -r requirements.txt
+python run_demo.py
+\end{lstlisting}
+\vo{``This is Ninja — a digital twin of a vehicle assembly line. This is a
+cold start, on a clean checkout. No GPU, no network, no API keys.''}
+\action{Let the scorecard print. Roughly 12 seconds. Do not cut away.}
+\vo{``Four scenarios: simulator, counterfactual, twin, scoring. Twelve seconds.''}
+
+% ================================================================
+\beat{0:18–0:50}{The claim — and the sealed numbers}{This is the beat the old script got wrong.}
+\warn{The \texttt{run\_demo.py} output is headed \textsc{demo scorecard (tuning split)}
+and explicitly labels itself development figures. Do not read the holdout numbers
+over it. Run the holdout scorer as a second command — it is five seconds of
+screen time and it is the honest version.}
+\begin{lstlisting}
+python -m eval.run_holdout
+\end{lstlisting}
+\visual{The \textsc{holdout scorecard} table printing, per scenario.}
+\vo{``That was the development set. This is the one that counts — nine scenarios
+the system has never been tuned against, scored once, against thresholds that
+were frozen before it ever saw them.''}
+\vo{``Six faults out of six detected. A forming bottleneck called a median of
+\textbf{37 minutes} before the line actually backs up. \textbf{99\%} of units
+built through a drifted process flagged before they reach final inspection —
+387 of 390. And \textbf{5.5} false alarms per seven-and-a-half-hour shift,
+across 40 stations.''}
+\vo{``Every one of those is reproducible from a clean checkout. The rest of this
+video is why you should believe them rather than just take them.''}
+
+% ================================================================
+\beat{0:50–1:20}{The problem, in one breath}{}
+\visual{The Supervisor tab, static. The 40-station line view.}
+\vo{``Two things go wrong on a real line. A station drifts slower, and nobody
+notices until a queue has already formed downstream. And a torque tool trends
+out of tolerance, producing cars that pass every local check and fail dozens of
+units later at final inspection.''}
+\vo{``Dashboards report both after the fact. And there is a harder problem
+underneath: on this line only 26 of 40 stations have sensors at all. The other
+14 emit nothing per unit. Buffer levels are never reported anywhere.''}
+\action{Point at the hollow diamonds in the line view.}
+\vo{``Those hollow diamonds are the stations with no sensors. Notice their
+uncertainty bands are visibly wider than the filled circles. That is the twin
+telling you how much it does not know.''}
+
+% ================================================================
+\beat{1:20–2:05}{Why the numbers are trustworthy}{The counterfactual, then two live proofs.}
+\visual{The architecture diagram from the README: simulator $\rightarrow$
+events.jsonl $\rightarrow$ twin $\rightarrow$ eval, ground truth branching off separately.}
+\vo{``Here is the part that actually matters. Every scenario runs twice from the
+same random seed — once with a fault injected, once without — and the two runs
+share their per-unit random draws. So any difference between them is caused by
+the fault and nothing else.''}
+\vo{``That is how we know exactly when a bottleneck would have formed. Not an
+estimate. A computed fact. Every lead-time number is measured against it.''}
+\vo{``And the twin never sees any of that. It reads one file: the event stream.
+We do not just assert that — we test it.''}
+\begin{lstlisting}
+pytest tests/test_isolation.py -v
+\end{lstlisting}
+\vo{``Three tests. The twin runs in a separate process, in a folder where the
+ground-truth file does not exist. And the third one asserts its output is
+byte-identical whether or not ground truth is sitting on disk beside it. A grep
+for imports would prove nothing; this does.''}
+\begin{lstlisting}
+python -m eval.freeze_thresholds --verify
+\end{lstlisting}
+\vo{``And the thresholds are sealed with a hash. If the config had changed after
+freezing, the holdout scorer would refuse to run at all — not warn, refuse.''}
+
+% ================================================================
+\beat{2:05–3:00}{Live perturbation — the anti-scripted-demo proof}{Do this as one continuous take.}
+\visual{Streamlit app, Validation tab, Live perturbation panel.}
+\vo{``This is the part a scripted demo cannot fake. We are going to inject a
+fault live, right now.''}
+\action{The panel already defaults to \textbf{S34 — FINA-34 Exhaust Hang}. A blue
+callout appears stating the station is uninstrumented. Leave the defaults: drift,
+severity 30, onset 210 min.}
+\vo{``Station 34. One of the 14 stations on this line with no sensors at all —
+the app is telling you that itself, right there. The twin has no direct reading
+from this station. Watch.''}
+\action{Click \textbf{Run scenario}. It takes 1--3 seconds. Do not cut.}
+\vo{``That just ran a fresh simulation, ran its same-seed counterfactual, fed
+only the event stream to the twin, and scored the result with the same matching
+rule as the holdout report.''}
+\visual{The result row: \textsc{detected} yes \quad \textsc{lead time} +54 min
+\quad \textsc{units lost} 21.}
+\vo{``Detected — 54 minutes before the buffer actually saturated. On a station
+that has no sensor on it.''}
+\vo{``L1 caught it from the timing of its instrumented neighbours alone. L2
+projected forward and named the specific downstream station that would starve.
+And the confidence on that alert is \emph{medium}, not high, with a band roughly
+three times wider than the same fault at an instrumented station.''}
+\action{Change the target station or drag the severity slider. Re-run.}
+\vo{``Change the fault and the answer changes with it. Nothing here is
+precomputed.''}
+
+% ================================================================
+\beat{3:00–3:30}{The trade-off, shown not told}{}
+\visual{The master sensitivity slider in the sidebar, and the threshold-sweep
+curve on the Validation tab.}
+\vo{``Every detector like this has one trade-off: catch things earlier, or raise
+fewer false alarms. We do not just mention it — we plot it.''}
+\action{Drag the sensitivity slider. The false-alarms-per-shift figure in the
+sidebar updates live, and the marker moves along the sweep curve.}
+\vo{``Turn sensitivity up and false alarms climb — at maximum it is over a
+hundred per shift and precision collapses. Turn it down and you lose recall.
+The 5.5 we report is the operating point we chose, and you can see exactly what
+we traded to get it.''}
+\vo{``That curve is real measured data from the sealed scenarios, not an
+illustration.''}
+
+% ================================================================
+\beat{3:30–3:55}{The honesty beat — say the limitations first}{}
+\visual{The ``Honest limitations'' section of the README.}
+\vo{``Three things we want to say before anyone asks.''}
+\vo{``First: all of this runs on simulated data, deliberately — because
+simulation is the only way to know ground truth well enough to score yourself
+honestly. The calibration script fits inbound-delay and defect-rate parameters
+from a real supply-chain dataset when one is supplied. We are shipping without
+one, so it is currently running on documented defaults: a 0.5\% base defect rate,
+the order of magnitude of the public Bosch production-line dataset, and drift
+shapes following AI4I 2020. The config records which of those it used.''}
+\vo{``Second: the false-alarm rate comes from three control runs, so the
+confidence interval is wide — 0.1 to 10.9. We report the interval rather than
+hiding it.''}
+\vo{``Third: our bottleneck layer is accurate rather than early. The early
+warning comes from drift detection. Propagation's job is naming where and what,
+not adding lead time on its own.''}
+
+% ================================================================
+\beat{3:55–4:10}{Close}{}
+\visual{The README headline table, then the holdout report.}
+\vo{``Tuned on one set of scenarios, seeds 1000 to 1999. Scored once, on another
+set it never saw, seeds 9000 to 9999. The ranges are enforced at config load
+time, so a holdout scenario cannot be an accidental replay of a tuned one.''}
+\vo{``51 tests. Every number in this video is in that report, and every one is
+reproducible from a clean checkout. That is Ninja.''}
+\action{Cut to black / logo card.}
+
+% ================================================================
+\vspace{10pt}
+\section*{Trim guide — if you need 3:00}
+\begin{enumerate}[leftmargin=16pt,itemsep=3pt]
+  \item Cut the trade-off beat (3:00--3:30). Replace with one line: ``we also
+  tuned this against a visible false-alarm trade-off, plotted in the repo.''
+  \textbf{Saves $\approx$30s.}
+  \item Jump-cut the install in the cold open --- ``\ldots and a few seconds
+  later'' --- rather than watching pip run. \textbf{Saves $\approx$8s.}
+  \item Compress the honesty beat to one sentence: ``everything here is simulated
+  by design, it currently runs on documented defaults rather than a supplied
+  dataset, and our confidence intervals reflect a small control sample --- all
+  three stated plainly in the README.'' \textbf{Saves $\approx$15s.}
+  \item Drop the \texttt{freeze\_thresholds --verify} command, keep the sentence.
+  \textbf{Saves $\approx$7s.}
+\end{enumerate}
+
+\vspace{4pt}
+\noindent\textbf{Never cut:} the counterfactual explanation, the live perturbation
+on the uninstrumented station, and the closing ``tuned on one set, scored on
+another'' line. Those three are what separate this from every other submission.
+
+% ================================================================
+\section*{Recording notes}
+\begin{itemize}[leftmargin=16pt,itemsep=3pt]
+  \item \textbf{The perturbation segment must be one continuous take.} A cut
+  there is the first thing a sceptical judge will question.
+  \item Start the app before recording --- first load simulates and runs the twin,
+  which takes a few seconds. Once warm it is cached and instant.
+  \item Pre-run the isolation test off camera so you know it passes, then run it
+  live anyway.
+  \item If \texttt{run\_demo.py} takes its full $\approx$12 seconds, let it
+  breathe. A visibly working cold start is worth more than saving five seconds.
+  \item The console is dark-themed; record on a dark desktop background so the
+  cut to the terminal is not jarring.
+\end{itemize}
+
+% ================================================================
+\section*{Figures used, and where they come from}
+\begin{center}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Figure} & \textbf{Value} & \textbf{Source} \\
+\midrule
+Median lead time (queue-forming, n=4) & +37.4 min & holdout\_results.json \\
+Defect containment (n=2)              & 99.2\%, 387/390 & holdout\_results.json \\
+Faults detected                       & 6 / 6 & holdout\_results.json \\
+Alert precision                       & 74.2\% & holdout\_results.json \\
+False alarms per shift (n=3 controls) & 5.50, CI 0.09--10.91 & holdout\_results.json \\
+Uninstrumented holdout fault (S34)    & +34 min early & holdout\_report.md \\
+Live perturbation, S34 @ 30\%         & +54 min, 21 units lost & app, live \\
+Instrumented coverage                 & 26 of 40 (65\%) & config/line.yaml \\
+Takt                                  & 76.0 s & config/line.yaml \\
+Test count                            & 51 & pytest \\
+Cold-start demo runtime               & $\approx$12 s & run\_demo.py \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{4pt}
+{\small\color{dim}\noindent The two lead-time figures are different measurements
+and both are real: \textbf{+34 min} is the sealed holdout result for the
+uninstrumented station; \textbf{+54 min} is what the live panel produces at its
+default settings, on a shorter 8-hour horizon. Use each only where this script
+places it.}
+
+\end{document}

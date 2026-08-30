@@ -1,0 +1,12 @@
+scenario_id: holdout_quality_s21
+split: holdout
+seed: 9004
+horizon_s: 54000
+description: SEALED. Process shift at station 21 escaping to final inspection.
+fault:
+  family: quality
+  station: 21
+  onset_s: 12600
+  fail_probability: 0.38
+  torque_shift_sigma: 2.3
+  defect_code: FASTENER-UNDERTORQUE

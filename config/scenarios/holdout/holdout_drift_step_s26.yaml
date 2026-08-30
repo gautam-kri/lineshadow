@@ -1,0 +1,13 @@
+scenario_id: holdout_drift_step_s26
+split: holdout
+seed: 9006
+horizon_s: 54000
+description: SEALED. Step change in cycle time behind a deep buffer.
+fault:
+  family: drift
+  station: 26
+  onset_s: 18000
+  signal: cycle_time
+  shape: step
+  magnitude_pct: 26
+  ramp_units: 1

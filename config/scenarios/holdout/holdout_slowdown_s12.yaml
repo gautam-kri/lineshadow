@@ -1,0 +1,13 @@
+scenario_id: holdout_slowdown_s12
+split: holdout
+seed: 9003
+horizon_s: 54000
+description: SEALED. Intermittent slowdowns on the body-shop bottleneck.
+fault:
+  family: slowdown
+  station: 12
+  onset_s: 16200
+  window_s: 14400
+  probability: 0.18
+  multiplier_min: 2.0
+  multiplier_max: 3.0

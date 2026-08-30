@@ -1,0 +1,12 @@
+scenario_id: holdout_quality_s06
+split: holdout
+seed: 9005
+horizon_s: 54000
+description: SEALED. Early body-shop process shift; long escape lag to station 40.
+fault:
+  family: quality
+  station: 6
+  onset_s: 10800
+  fail_probability: 0.32
+  torque_shift_sigma: 2.6
+  defect_code: WELD-NUGGET-SMALL

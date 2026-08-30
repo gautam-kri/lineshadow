@@ -1,0 +1,13 @@
+scenario_id: holdout_drift_s34_uninstr
+split: holdout
+seed: 9002
+horizon_s: 54000
+description: SEALED. Cycle-time drift at an UNINSTRUMENTED final-assembly station.
+fault:
+  family: drift
+  station: 34
+  onset_s: 12600
+  signal: cycle_time
+  shape: linear
+  magnitude_pct: 28
+  ramp_units: 100

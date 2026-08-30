@@ -1,0 +1,12 @@
+scenario_id: tuning_quality_s08
+split: tuning
+seed: 1004
+horizon_s: 54000
+description: Process shift at station 8; defects escape and only surface at final inspection.
+fault:
+  family: quality
+  station: 8
+  onset_s: 10800
+  fail_probability: 0.4
+  torque_shift_sigma: 2.4
+  defect_code: TORQUE-LOW

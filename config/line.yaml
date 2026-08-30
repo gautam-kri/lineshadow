@@ -1,0 +1,578 @@
+# Ninja line topology.
+# All times are SECONDS. Generated as a starting point, then edited by scripts/calibrate.py
+# (which overwrites line.arrival.part_delay and line.quality from data/supply_chain.csv).
+#
+# instrumented: false  -> station emits NO per-unit events; only a sparse manual checklist.
+#                         The twin must infer its behaviour from neighbouring timing.
+# Buffer i is the INPUT buffer of station i (fed by station i-1).
+line:
+  n_stations: 40
+  takt_time_s: 76.0
+  zones:
+    body:
+    - 1
+    - 15
+    paint:
+    - 16
+    - 24
+    final_assembly:
+    - 25
+    - 40
+  inspection_station: 40
+  arrival:
+    interarrival_mean_s: 70.0
+    interarrival_cv: 0.08
+    part_delay:
+      source: defaults
+      distribution: lognormal
+      probability: 0.03
+      median_s: 150.0
+      sigma_log: 0.7
+  models:
+    A: 0.5
+    B: 0.3
+    C: 0.2
+  quality:
+    base_defect_rate: 0.005
+    source: defaults
+    base_defect_codes:
+    - SEAL-LEAK
+    - FIT-GAP
+    - PAINT-ORANGE-PEEL
+    - TORQUE-LOW
+    - ELEC-OPEN
+  stations:
+  - id: 1
+    name: BODY-01 Underbody Framing
+    zone: body
+    mean_cycle_s: 65.2
+    cycle_sigma_log: 0.094
+    buffer_capacity: 5
+    instrumented: true
+    torque_mean: 50.8
+    torque_sd: 1.2
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 2
+    name: BODY-02 Floorpan Weld
+    zone: body
+    mean_cycle_s: 57.0
+    cycle_sigma_log: 0.108
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 38.6
+    torque_sd: 0.91
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 3
+    name: BODY-03 Front Rail Set
+    zone: body
+    mean_cycle_s: 66.9
+    cycle_sigma_log: 0.106
+    buffer_capacity: 5
+    instrumented: false
+    torque_mean: 43.1
+    torque_sd: 1.35
+    model_multipliers:
+      A: 1.0
+      B: 1.046
+      C: 1.048
+    checklist_every: 11
+  - id: 4
+    name: BODY-04 Rear Rail Set
+    zone: body
+    mean_cycle_s: 66.9
+    cycle_sigma_log: 0.12
+    buffer_capacity: 4
+    instrumented: true
+    torque_mean: 52.5
+    torque_sd: 1.15
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 5
+    name: BODY-05 Bodyside Load
+    zone: body
+    mean_cycle_s: 59.6
+    cycle_sigma_log: 0.127
+    buffer_capacity: 6
+    instrumented: false
+    torque_mean: 35.5
+    torque_sd: 1.2
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 8
+  - id: 6
+    name: BODY-06 Bodyside Weld L
+    zone: body
+    mean_cycle_s: 67.5
+    cycle_sigma_log: 0.097
+    buffer_capacity: 4
+    instrumented: true
+    torque_mean: 51.2
+    torque_sd: 1.05
+    model_multipliers:
+      A: 1.0
+      B: 1.026
+      C: 1.024
+  - id: 7
+    name: BODY-07 Bodyside Weld R
+    zone: body
+    mean_cycle_s: 67.6
+    cycle_sigma_log: 0.089
+    buffer_capacity: 5
+    instrumented: false
+    torque_mean: 48.2
+    torque_sd: 1.25
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 9
+  - id: 8
+    name: BODY-08 Roof Bow Set
+    zone: body
+    mean_cycle_s: 64.3
+    cycle_sigma_log: 0.105
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 59.2
+    torque_sd: 1.56
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 9
+    name: BODY-09 Roof Laser Braze
+    zone: body
+    mean_cycle_s: 65.7
+    cycle_sigma_log: 0.11
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 40.4
+    torque_sd: 1.1
+    model_multipliers:
+      A: 1.0
+      B: 1.055
+      C: 1.038
+  - id: 10
+    name: BODY-10 Framing Gate
+    zone: body
+    mean_cycle_s: 65.8
+    cycle_sigma_log: 0.139
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 36.0
+    torque_sd: 0.91
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 11
+    name: BODY-11 Respot Weld A
+    zone: body
+    mean_cycle_s: 56.8
+    cycle_sigma_log: 0.127
+    buffer_capacity: 3
+    instrumented: false
+    torque_mean: 52.4
+    torque_sd: 1.66
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 8
+  - id: 12
+    name: BODY-12 Respot Weld B
+    zone: body
+    mean_cycle_s: 70.5
+    cycle_sigma_log: 0.087
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 38.1
+    torque_sd: 1.13
+    model_multipliers:
+      A: 1.0
+      B: 1.049
+      C: 1.02
+  - id: 13
+    name: BODY-13 Closure Hang
+    zone: body
+    mean_cycle_s: 59.7
+    cycle_sigma_log: 0.119
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 46.2
+    torque_sd: 1.52
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 14
+    name: BODY-14 Hood & Decklid Fit
+    zone: body
+    mean_cycle_s: 67.1
+    cycle_sigma_log: 0.086
+    buffer_capacity: 5
+    instrumented: false
+    torque_mean: 59.5
+    torque_sd: 1.77
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 9
+  - id: 15
+    name: BODY-15 Body Metrology
+    zone: body
+    mean_cycle_s: 64.4
+    cycle_sigma_log: 0.104
+    buffer_capacity: 5
+    instrumented: true
+    torque_mean: 43.6
+    torque_sd: 1.36
+    model_multipliers:
+      A: 1.0
+      B: 1.039
+      C: 1.017
+  - id: 16
+    name: PAIN-16 Pretreat Load
+    zone: paint
+    mean_cycle_s: 62.3
+    cycle_sigma_log: 0.129
+    buffer_capacity: 5
+    instrumented: true
+    torque_mean: 28.3
+    torque_sd: 0.61
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 17
+    name: PAIN-17 E-Coat Dip
+    zone: paint
+    mean_cycle_s: 56.0
+    cycle_sigma_log: 0.083
+    buffer_capacity: 4
+    instrumented: false
+    torque_mean: 45.9
+    torque_sd: 0.96
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 10
+  - id: 18
+    name: PAIN-18 E-Coat Bake
+    zone: paint
+    mean_cycle_s: 64.8
+    cycle_sigma_log: 0.095
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 42.5
+    torque_sd: 0.9
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 19
+    name: PAIN-19 Sealer Robot
+    zone: paint
+    mean_cycle_s: 59.1
+    cycle_sigma_log: 0.11
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 32.7
+    torque_sd: 0.95
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 20
+    name: PAIN-20 Sealer Manual
+    zone: paint
+    mean_cycle_s: 59.2
+    cycle_sigma_log: 0.119
+    buffer_capacity: 4
+    instrumented: true
+    torque_mean: 61.9
+    torque_sd: 1.53
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 21
+    name: PAIN-21 Primer Spray
+    zone: paint
+    mean_cycle_s: 64.3
+    cycle_sigma_log: 0.126
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 29.8
+    torque_sd: 0.62
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 22
+    name: PAIN-22 Basecoat Spray
+    zone: paint
+    mean_cycle_s: 65.5
+    cycle_sigma_log: 0.104
+    buffer_capacity: 3
+    instrumented: false
+    torque_mean: 34.5
+    torque_sd: 0.95
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 9
+  - id: 23
+    name: PAIN-23 Clearcoat Spray
+    zone: paint
+    mean_cycle_s: 56.9
+    cycle_sigma_log: 0.097
+    buffer_capacity: 5
+    instrumented: true
+    torque_mean: 61.0
+    torque_sd: 1.29
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 24
+    name: PAIN-24 Paint Inspect
+    zone: paint
+    mean_cycle_s: 63.9
+    cycle_sigma_log: 0.103
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 46.7
+    torque_sd: 1.21
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 25
+    name: FINA-25 Door Removal
+    zone: final_assembly
+    mean_cycle_s: 66.7
+    cycle_sigma_log: 0.116
+    buffer_capacity: 4
+    instrumented: false
+    torque_mean: 53.0
+    torque_sd: 1.58
+    model_multipliers:
+      A: 1.0
+      B: 1.073
+      C: 1.077
+    checklist_every: 9
+  - id: 26
+    name: FINA-26 Cockpit Decking
+    zone: final_assembly
+    mean_cycle_s: 63.2
+    cycle_sigma_log: 0.113
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 53.0
+    torque_sd: 1.77
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 27
+    name: FINA-27 Headliner Set
+    zone: final_assembly
+    mean_cycle_s: 59.1
+    cycle_sigma_log: 0.085
+    buffer_capacity: 4
+    instrumented: false
+    torque_mean: 39.7
+    torque_sd: 0.87
+    model_multipliers:
+      A: 1.0
+      B: 1.065
+      C: 1.08
+    checklist_every: 13
+  - id: 28
+    name: FINA-28 Harness Route
+    zone: final_assembly
+    mean_cycle_s: 59.9
+    cycle_sigma_log: 0.124
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 37.5
+    torque_sd: 1.29
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 29
+    name: FINA-29 Glass Urethane
+    zone: final_assembly
+    mean_cycle_s: 61.5
+    cycle_sigma_log: 0.116
+    buffer_capacity: 3
+    instrumented: false
+    torque_mean: 55.5
+    torque_sd: 1.63
+    model_multipliers:
+      A: 1.0
+      B: 1.089
+      C: 1.135
+    checklist_every: 12
+  - id: 30
+    name: FINA-30 Windshield Set
+    zone: final_assembly
+    mean_cycle_s: 60.9
+    cycle_sigma_log: 0.107
+    buffer_capacity: 3
+    instrumented: true
+    torque_mean: 28.4
+    torque_sd: 0.85
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 31
+    name: FINA-31 Carpet & Console
+    zone: final_assembly
+    mean_cycle_s: 71.0
+    cycle_sigma_log: 0.119
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 34.4
+    torque_sd: 0.78
+    model_multipliers:
+      A: 1.0
+      B: 1.044
+      C: 1.064
+  - id: 32
+    name: FINA-32 Seat Load
+    zone: final_assembly
+    mean_cycle_s: 61.7
+    cycle_sigma_log: 0.094
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 40.8
+    torque_sd: 1.25
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 33
+    name: FINA-33 Fuel Tank Lift
+    zone: final_assembly
+    mean_cycle_s: 62.2
+    cycle_sigma_log: 0.084
+    buffer_capacity: 4
+    instrumented: true
+    torque_mean: 50.0
+    torque_sd: 1.12
+    model_multipliers:
+      A: 1.0
+      B: 1.07
+      C: 1.104
+  - id: 34
+    name: FINA-34 Exhaust Hang
+    zone: final_assembly
+    mean_cycle_s: 65.8
+    cycle_sigma_log: 0.115
+    buffer_capacity: 6
+    instrumented: false
+    torque_mean: 60.5
+    torque_sd: 2.11
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 12
+  - id: 35
+    name: FINA-35 Engine Marriage
+    zone: final_assembly
+    mean_cycle_s: 63.1
+    cycle_sigma_log: 0.097
+    buffer_capacity: 4
+    instrumented: true
+    torque_mean: 59.9
+    torque_sd: 1.35
+    model_multipliers:
+      A: 1.0
+      B: 1.083
+      C: 1.051
+  - id: 36
+    name: FINA-36 Suspension Bolt
+    zone: final_assembly
+    mean_cycle_s: 64.1
+    cycle_sigma_log: 0.083
+    buffer_capacity: 5
+    instrumented: false
+    torque_mean: 40.6
+    torque_sd: 1.33
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+    checklist_every: 9
+  - id: 37
+    name: FINA-37 Wheel Nutrunner
+    zone: final_assembly
+    mean_cycle_s: 55.5
+    cycle_sigma_log: 0.117
+    buffer_capacity: 5
+    instrumented: false
+    torque_mean: 44.6
+    torque_sd: 1.17
+    model_multipliers:
+      A: 1.0
+      B: 1.073
+      C: 1.127
+    checklist_every: 10
+  - id: 38
+    name: FINA-38 Brake Fill
+    zone: final_assembly
+    mean_cycle_s: 67.8
+    cycle_sigma_log: 0.115
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 51.6
+    torque_sd: 1.23
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0
+  - id: 39
+    name: FINA-39 Coolant Fill
+    zone: final_assembly
+    mean_cycle_s: 62.9
+    cycle_sigma_log: 0.076
+    buffer_capacity: 5
+    instrumented: false
+    torque_mean: 49.8
+    torque_sd: 1.44
+    model_multipliers:
+      A: 1.0
+      B: 1.03
+      C: 1.08
+    checklist_every: 13
+  - id: 40
+    name: FINA-40 Door Rehang
+    zone: final_assembly
+    mean_cycle_s: 58.7
+    cycle_sigma_log: 0.088
+    buffer_capacity: 6
+    instrumented: true
+    torque_mean: 50.5
+    torque_sd: 1.27
+    model_multipliers:
+      A: 1.0
+      B: 1.0
+      C: 1.0

@@ -1,0 +1,13 @@
+scenario_id: tuning_drift_mild_s33
+split: tuning
+seed: 1006
+horizon_s: 54000
+description: Mild drift well under takt; deliberately never forms a queue.
+fault:
+  family: drift
+  station: 33
+  onset_s: 12600
+  signal: cycle_time
+  shape: linear
+  magnitude_pct: 8
+  ramp_units: 120

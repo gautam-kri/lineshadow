@@ -1,0 +1,77 @@
+# Ninja digital-twin tunables.
+#
+# `sensitivity` in [0,1] is the single master knob. Every alert threshold is a
+# linear interpolation between its `..._at_sensitivity_0` value (few alerts) and
+# its `..._at_sensitivity_1` value (many alerts). The mapping is monotone by
+# construction, which the threshold sweep and its test rely on.
+#
+# The `..._at_sensitivity_1` values double as the emission floor: the twin stores
+# every candidate scoring above them exactly once, so re-thresholding at any
+# sensitivity is a filter over cached candidates rather than a re-run.
+#
+# All times are SECONDS.
+twin:
+  sensitivity: 0.5
+
+  warmup:
+    line_prime_units: 20     # ignore everything until the line has filled; the
+                             # fill-up transient would otherwise bias every baseline
+    min_samples: 80          # per station per signal before a baseline is trusted
+    baseline_window: 150     # samples retained to estimate the healthy baseline
+
+  l1:
+    signals: [cycle_time, torque, cycle_time_inferred, checklist]
+    ewma_lambda: 0.12
+    ewma_scale: 3.0          # EWMA z-units that count as severity 1.0
+    sd_floor:                # minimum baseline sd, guarding degenerate warm-ups
+      checklist: 0.05        # the checklist signal is a rolling failure RATE
+    cusum_k_sigma: 0.5       # slack, in baseline sd units
+    cusum_k_by_signal:       # per-signal slack override
+      cycle_time_inferred: 1.25   # inferred estimates carry a slow congestion
+                                  # wander; require a larger shift before the
+                                  # CUSUM starts integrating it
+    cusum_h_sigma: 5.0       # decision interval, in baseline sd units
+    cusum_cap_multiple: 12   # CUSUM saturates at this many decision intervals
+    low_quantile: 0.2        # quantile used for congestion-robust level estimates
+    refractory_s: 1200       # min gap between alerts on one (station, signal)
+    # Calibrated on the TUNING control runs only (see reports/): the sensitivity-0
+    # end sits at ~1.5 false alarms/shift, the sensitivity-1 end at ~40/shift.
+    severity_at_sensitivity_0: 3.0
+    severity_at_sensitivity_1: 1.0
+
+  sparse:
+    min_transit_samples: 25
+    uncertainty_inflation: 2.0        # inferred bands are never narrower than this x direct
+    multi_unknown_extra_inflation: 1.8
+    confidence_direct: 0.95
+    confidence_inferred_single: 0.55
+    confidence_inferred_multi: 0.30
+
+  l2:
+    interval_s: 300          # project forward every 5 simulated minutes
+    horizon_s: 7200          # 120 minutes of look-ahead
+    min_horizon_s: 3600
+    percentiles: [10, 50, 90]
+    min_rate_deficit: 0.000015   # units/s; ignore deficits below sensor resolution
+    max_chain_stations: 3        # how far a predicted block/starve cascade is
+                                 # reported; every alert still names its cause
+    confidence_at_sensitivity_0: 0.62
+    confidence_at_sensitivity_1: 0.18
+    refractory_s: 3600
+
+  l3:
+    model_path: models/l3.joblib     # optional; absent -> unsupervised path only
+    min_labels_for_calibration: 120
+    min_positives_for_calibration: 8
+    refit_every_labels: 60
+    escalation_step: 0.05        # re-flag a unit only if its risk rises this much
+    # A station is "suspect" when its quality-signal EWMA statistic (the same one
+    # L1 uses, in units of that statistic's own sd) has moved this far.
+    station_shift_low: 3.5
+    station_shift_high: 7.0
+    # How much this particular unit's own reading adds on top of that.
+    unit_z_low: 0.5
+    unit_z_high: 3.0
+    risk_at_sensitivity_0: 0.72
+    risk_at_sensitivity_1: 0.30
+    refractory_s: 0              # per-VIN flags are not deduplicated in time

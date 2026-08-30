@@ -1,0 +1,7 @@
+scenario_id: tuning_control_a
+split: tuning
+seed: 1010
+horizon_s: 54000
+description: Control run, no fault. Used to measure the false-alarm rate honestly.
+fault:
+  family: none

@@ -1,0 +1,21 @@
+# Generated artefacts — everything here is reproducible from a clean checkout
+runs/
+
+# 4.4 MB of inlined plotly.js. GitHub will not render it in-page anyway, and
+# `python -m eval.run_holdout` regenerates it locally in seconds.
+reports/threshold_sweep.html
+
+# models/l3.joblib IS committed: the holdout figures in reports/ were produced
+# with it, and without it containment differs by one unit. Shipping it is what
+# makes "reproducible from a clean checkout" literally true. Regenerate with
+# `python scripts/train_l3.py`.
+
+# Local environment
+.claude/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Optional input dataset (place your own at data/supply_chain.csv)
+data/*.csv
