@@ -367,7 +367,7 @@ We'd rather you read these here than find them yourself.
 
 <div align="center">
 
-**Demo video:** `[link placeholder]`
+**Demo video:** (https://youtu.be/_-GHJbrko5g)
 
 <sub>Built for the Accenture Innovation Challenge · MIT licensed</sub>
 
