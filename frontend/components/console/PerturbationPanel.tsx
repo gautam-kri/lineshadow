@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { api, ApiError } from "@/lib/api";
 import type { LineModel, RunPayload } from "@/lib/types";
 import { fmtSigned, minutes } from "@/lib/format";
+import { DURATION, EASE_OUT } from "@/lib/motion";
 
 /**
  * Inject a fault into a fresh simulation, live.
@@ -12,10 +14,11 @@ import { fmtSigned, minutes } from "@/lib/format";
  * counterfactual, feeds only the event stream to the twin, and scores the result
  * with the same matching rule as the holdout report.
  *
- * MOTION (not yet implemented): the pending state gets an indeterminate pulse --
- * indeterminate is the honest choice because the server timing is genuinely
- * unknown, and a fake progress bar would claim knowledge we do not have. The
- * result card enters only once data has actually arrived; never before.
+ * MOTION. Gate: occasional tier, purpose is feedback. The pending state gets an
+ * indeterminate pulse -- indeterminate is the honest choice, because the server
+ * genuinely does not know how long a simulation will take and a determinate bar
+ * would claim knowledge we do not have. The result card enters only once data
+ * has actually arrived; nothing is animated in ahead of the response.
  */
 
 interface Props {
@@ -33,6 +36,7 @@ export function PerturbationPanel({ line, defaultStation }: Props) {
   const [severity, setSeverity] = useState(30);
   const [onsetMin, setOnsetMin] = useState(210);
 
+  const reduce = useReducedMotion();
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<RunPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -140,7 +144,9 @@ export function PerturbationPanel({ line, defaultStation }: Props) {
         disabled={pending}
         className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-bg disabled:opacity-60"
       >
-        {pending ? "Running simulation…" : "Run scenario"}
+        <span className={pending ? "nj-pending" : undefined}>
+          {pending ? "Running simulation…" : "Run scenario"}
+        </span>
       </button>
 
       {error && (
@@ -149,12 +155,12 @@ export function PerturbationPanel({ line, defaultStation }: Props) {
         </p>
       )}
 
-      {result && !pending && <PerturbationResult result={result} />}
+      {result && !pending && <PerturbationResult result={result} reduce={reduce} />}
     </section>
   );
 }
 
-function PerturbationResult({ result }: { result: RunPayload }) {
+function PerturbationResult({ result, reduce }: { result: RunPayload; reduce: boolean | null }) {
   const { score, ground_truth: gt } = result;
   const lead =
     score.lead_time_queue_min !== null
@@ -164,7 +170,12 @@ function PerturbationResult({ result }: { result: RunPayload }) {
         : { label: "Lead time", value: "–", hint: "" };
 
   return (
-    <div className="mt-5 border-t border-line pt-4">
+    <motion.div
+      initial={{ opacity: 0, transform: reduce ? "translateY(0px)" : "translateY(8px)" }}
+      animate={{ opacity: 1, transform: "translateY(0px)" }}
+      transition={{ duration: DURATION.reveal, ease: EASE_OUT }}
+      className="mt-5 border-t border-line pt-4"
+    >
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Figure label="Detected" value={score.detected ? "yes" : "no"} />
         <Figure label={lead.label} value={lead.value} hint={lead.hint} />
@@ -197,7 +208,7 @@ function PerturbationResult({ result }: { result: RunPayload }) {
         <strong className="text-dim">{result.alerts.l2.length}</strong> L2 and{" "}
         <strong className="text-dim">{result.alerts.l3.length}</strong> L3 alerts.
       </p>
-    </div>
+    </motion.div>
   );
 }
 

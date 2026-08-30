@@ -7,10 +7,16 @@ import { confidenceLabel, severityColour } from "@/lib/format";
 /**
  * The 40-station line.
  *
- * Deliberately static. This is data the operator is reading, not decoration, and
- * the `animate` skill is explicit that data must not move for style. Stations
- * update in place; when motion lands, only the specific station whose state just
- * changed gets a brief transition, and the diagram as a whole never animates.
+ * The diagram as a whole never animates. This is data the operator is reading,
+ * and the `animate` skill is explicit that data must not move for style.
+ *
+ * Two exceptions, both carrying information rather than decorating:
+ *   - A station's severity colour cross-fades over 160ms when it changes. Colour
+ *     is the one property here that cannot be expressed as transform/opacity.
+ *     Position never animates, so a marker is always readable where it sits.
+ *   - A genuinely low-confidence uncertainty band breathes its OPACITY. Moving
+ *     the whiskers would make the band unreadable exactly when it is asking to
+ *     be read carefully, so the ambient layer never touches geometry.
  *
  * Uninstrumented stations are hollow diamonds with a visibly wider uncertainty
  * whisker. That difference is the whole point of the view: a station the twin
@@ -152,7 +158,10 @@ export function LineDiagram({
                 height={plotH}
                 fill="transparent"
               />
-              {/* uncertainty whisker */}
+              {/* Uncertainty whisker. The ambient breath is applied only where
+                  confidence is genuinely low -- not merely inferred -- which
+                  keeps simultaneous motion far under the 1/3 rule. */}
+              <g className={confidenceLabel(state.confidence) === "low" ? "nj-band-uncertain" : undefined}>
               <line
                 x1={cx}
                 x2={cx}
@@ -177,9 +186,11 @@ export function LineDiagram({
                 stroke={spec.instrumented ? "var(--nj-band-direct)" : "var(--nj-band-inferred)"}
                 strokeWidth={spec.instrumented ? 1.1 : 2.4}
               />
+              </g>
 
               {spec.instrumented ? (
                 <circle
+                  className="nj-station-mark"
                   cx={cx}
                   cy={cy}
                   r={isHovered ? 9 : 7.5}
@@ -189,6 +200,7 @@ export function LineDiagram({
                 />
               ) : (
                 <rect
+                  className="nj-station-mark"
                   x={cx - 8}
                   y={cy - 8}
                   width={16}

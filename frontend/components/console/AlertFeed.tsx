@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { StationAlert } from "@/lib/types";
 import { groupAlerts, minutes } from "@/lib/format";
+import { ALERT_STAGGER, DURATION, EASE_OUT } from "@/lib/motion";
 
 /**
  * Severity-ranked alert feed.
@@ -11,10 +13,13 @@ import { groupAlerts, minutes } from "@/lib/format";
  * which is correct detector behaviour and is what the evaluation scores, but it
  * makes a useless feed. The repeat count carries that information instead.
  *
- * MOTION (not yet implemented): alerts entering and leaving this list are
- * feedback at the occasional tier -- 200-300ms, ease-out, sliding in from the
- * direction of the line diagram, with a symmetric exit via AnimatePresence.
- * Left static until the motion skills can be loaded.
+ * MOTION. Gate: occasional tier, purpose is feedback plus spatial consistency.
+ * Rows slide down from the line diagram that sits above them and leave the same
+ * way, because a symmetric path is what makes the relationship obvious. Motion
+ * rather than CSS because these are real list mutations that need exit
+ * animations and interruption, and AnimatePresence is the cheapest thing that
+ * does that. Transform and opacity only; the full transform string rather than
+ * the `y` shorthand, which is not hardware accelerated.
  */
 
 interface Props {
@@ -27,6 +32,9 @@ const signalOf = (alert: StationAlert) =>
 
 export function AlertFeed({ alerts, limit = 20 }: Props) {
   const [open, setOpen] = useState<string | null>(null);
+  const reduce = useReducedMotion();
+  // Reduced motion keeps the fade -- it aids comprehension -- and drops travel.
+  const travel = reduce ? "translateY(0px)" : "translateY(-6px)";
 
   const grouped = useMemo(
     () => groupAlerts(alerts, (a) => a.rank_score, signalOf).slice(0, limit),
@@ -43,12 +51,27 @@ export function AlertFeed({ alerts, limit = 20 }: Props) {
 
   return (
     <ul className="space-y-1.5">
-      {grouped.map((alert) => {
+      <AnimatePresence initial={false}>
+        {grouped.map((alert, index) => {
         const key = `${alert.layer}-${alert.station}-${signalOf(alert)}`;
         const isOpen = open === key;
         const inferred = alert.basis === "inferred";
         return (
-          <li key={key} className="overflow-hidden rounded-lg border border-line bg-elev">
+          <motion.li
+            key={key}
+            layout={reduce ? false : "position"}
+            initial={{ opacity: 0, transform: travel }}
+            animate={{ opacity: 1, transform: "translateY(0px)" }}
+            exit={{ opacity: 0, transform: travel }}
+            transition={{
+              duration: DURATION.enter,
+              ease: EASE_OUT,
+              // Micro-cascade only on entry, and only for rows near the top, so
+              // the total stagger stays inside motion-design's 200ms budget.
+              delay: Math.min(index, 5) * ALERT_STAGGER,
+            }}
+            className="overflow-hidden rounded-lg border border-line bg-elev"
+          >
             <button
               type="button"
               onClick={() => setOpen(isOpen ? null : key)}
@@ -118,9 +141,10 @@ export function AlertFeed({ alerts, limit = 20 }: Props) {
                 </dl>
               </div>
             )}
-          </li>
-        );
-      })}
+          </motion.li>
+          );
+        })}
+      </AnimatePresence>
     </ul>
   );
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AlertFeed } from "@/components/console/AlertFeed";
+import { FalseAlarmReadout } from "@/components/console/FalseAlarmReadout";
 import { LineDiagram } from "@/components/console/LineDiagram";
 import { PerturbationPanel } from "@/components/console/PerturbationPanel";
 import { api, ApiError } from "@/lib/api";
@@ -216,15 +217,10 @@ export default function ConsolePage() {
           )}
         </label>
 
-        {fa !== null && (
-          <div className="min-w-52">
-            <span className="nj-label">Expected false alarms / shift</span>
-            <div className="tnum mt-1 text-3xl font-semibold tracking-tight">{fa.toFixed(2)}</div>
-            <span className="text-[0.72rem] text-mute">
-              from the sealed holdout controls · shift = 7.5 h
-            </span>
-          </div>
-        )}
+        <FalseAlarmReadout
+          value={fa}
+          caption="from the sealed holdout controls · shift = 7.5 h"
+        />
       </div>
 
       {gt && (
