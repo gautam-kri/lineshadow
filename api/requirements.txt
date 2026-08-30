@@ -1,0 +1,5 @@
+# Presentation-layer API. Not needed to run the engine, tests or run_demo.py.
+#   pip install -r api/requirements.txt
+#   uvicorn api.main:app --reload --port 8000
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
