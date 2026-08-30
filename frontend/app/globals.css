@@ -232,3 +232,18 @@ input[type="range"]::-moz-range-thumb {
     opacity: 0.7;
   }
 }
+
+/* Scroll-held scene (Zone A). The track reserves the hold in layout, so the
+   section below can never ride over it. Under reduced motion the hold is
+   dropped entirely -- no sticky, no extra track height -- and the scene reads
+   as an ordinary static diagram. */
+@media (prefers-reduced-motion: reduce) {
+  .nj-scene-track {
+    height: auto;
+  }
+  .nj-scene-sticky {
+    position: static;
+    height: auto;
+    padding-block: 6rem;
+  }
+}
