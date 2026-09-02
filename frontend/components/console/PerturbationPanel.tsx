@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, isStatic } from "@/lib/api";
 import type { LineModel, RunPayload } from "@/lib/types";
 import { fmtSigned, minutes } from "@/lib/format";
 import { DURATION, EASE_OUT } from "@/lib/motion";
@@ -138,16 +138,31 @@ export function PerturbationPanel({ line, defaultStation }: Props) {
         </p>
       )}
 
-      <button
-        type="button"
-        onClick={run}
-        disabled={pending}
-        className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-bg disabled:opacity-60"
-      >
-        <span className={pending ? "nj-pending" : undefined}>
-          {pending ? "Running simulation…" : "Run scenario"}
-        </span>
-      </button>
+      {isStatic ? (
+        <div className="mt-4 rounded-lg border border-line-strong bg-input px-4 py-3">
+          <p className="text-[0.82rem] leading-relaxed text-dim">
+            <strong className="text-fg">This panel needs the Python engine.</strong> It runs a new
+            simulation and its same-seed counterfactual on demand, which a static host cannot do —
+            and replaying a saved result here would undo the one claim the panel exists to make. Run
+            the project locally and it works:
+          </p>
+          <pre className="mt-2.5 overflow-x-auto font-mono text-[0.72rem] leading-relaxed text-mute">
+{`uvicorn api.main:app --port 8000
+cd frontend && npm run dev`}
+          </pre>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={run}
+          disabled={pending}
+          className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-bg disabled:opacity-60"
+        >
+          <span className={pending ? "nj-pending" : undefined}>
+            {pending ? "Running simulation…" : "Run scenario"}
+          </span>
+        </button>
+      )}
 
       {error && (
         <p className="mt-4 rounded-lg border border-critical px-3.5 py-2.5 text-sm text-critical">

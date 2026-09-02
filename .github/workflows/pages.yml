@@ -1,0 +1,83 @@
+name: Deploy dashboard to GitHub Pages
+
+# The hosted dashboard is a static export that reads JSON baked from the real
+# engine. The bake happens here, on every push, rather than being committed —
+# so what is published can never drift from the code that produced it.
+#
+# GitHub Pages cannot run Python, so the live perturbation panel is disabled in
+# this build rather than replayed. Everything else is genuine engine output.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never publish two builds at once; let an in-flight deploy finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install the engine
+        run: pip install -r requirements.txt
+
+      - name: Verify the frozen twin config still matches
+        run: python -m eval.freeze_thresholds --verify
+
+      - name: Bake the engine's responses to static JSON
+        # Simulates every scenario and its counterfactual, runs the twin, and
+        # writes one payload per (scenario, sensitivity). Takes a couple of
+        # minutes and is what makes the hosted console real rather than a mock.
+        run: python scripts/export_static_api.py --clean
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build the static export
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_STATIC_API: "1"
+          # A project Pages site is served from /<repo>, not the domain root.
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+        run: npm run build
+
+      - name: Disable Jekyll
+        # Without this, Pages ignores the _next directory because of the underscore.
+        run: touch frontend/out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

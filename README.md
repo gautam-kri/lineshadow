@@ -13,6 +13,10 @@ Working prototype for **DigitalTwin.ai** — Accenture Innovation Challenge Roun
 [![Runtime](https://img.shields.io/badge/runtime-CPU%20only%20·%20no%20network-lightgrey)](#quickstart)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+### ▶︎ [Watch the demo](https://youtu.be/_-GHJbrko5g)  ·  ◧ [Open the live dashboard](https://gautam-kri.github.io/ninja/)
+
+<sub>The dashboard runs in your browser — no install, no setup.</sub>
+
 <img src="docs/img/supervisor.png" alt="Ninja supervisor console showing a 40-station assembly line with station 12 flagged in red" width="100%">
 
 </div>
@@ -240,9 +244,37 @@ checkout. No GPU, no network, no API keys.
 
 ```bash
 python run_demo.py --fast          # 6 h smoke run, ~5 s
-streamlit run app/streamlit_app.py # the operator console
 python -m eval.run_holdout         # the sealed holdout scorecard
+streamlit run app/streamlit_app.py # the Python operator console
 ```
+
+### The web console
+
+**Hosted, nothing to install: [gautam-kri.github.io/ninja](https://gautam-kri.github.io/ninja/)**
+
+That build is a static export of the same front end, reading JSON baked from the
+real engine on every push — scenario browsing, the 40-station line, the alert
+feed with full evidence, and the sensitivity control all behave exactly as they
+do locally. The one thing it cannot do is the live perturbation panel, which has
+to run a new simulation and its counterfactual server-side; it says so in place
+rather than replaying a saved result. For that, run it locally:
+
+A Next.js front end over a read-only JSON API. Two processes, because the
+engine stays Python and the UI never reaches past the API into it.
+
+```bash
+pip install -r api/requirements.txt
+uvicorn api.main:app --port 8000
+```
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Then open **http://localhost:3000** for the walkthrough and
+**http://localhost:3000/console** for the operator console. The console's live
+perturbation panel runs a fresh simulation, its same-seed counterfactual and the
+twin on demand — it is not a replay.
 
 ---
 
@@ -367,7 +399,7 @@ We'd rather you read these here than find them yourself.
 
 <div align="center">
 
-**Demo video:** (https://youtu.be/_-GHJbrko5g)
+**[Watch the demo →](https://youtu.be/_-GHJbrko5g)**  ·  **[Open the dashboard →](https://gautam-kri.github.io/ninja/)**
 
 <sub>Built for the Accenture Innovation Challenge · MIT licensed</sub>
 

@@ -6,7 +6,7 @@ import { AlertFeed } from "@/components/console/AlertFeed";
 import { FalseAlarmReadout } from "@/components/console/FalseAlarmReadout";
 import { LineDiagram } from "@/components/console/LineDiagram";
 import { PerturbationPanel } from "@/components/console/PerturbationPanel";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, isStatic } from "@/lib/api";
 import type { HoldoutBundle, LineModel, RunPayload, ScenarioSummary } from "@/lib/types";
 import { fmtHours, fmtSigned, severityColour } from "@/lib/format";
 
@@ -177,6 +177,15 @@ export default function ConsolePage() {
           ← overview
         </Link>
       </header>
+
+      {isStatic && (
+        <p className="mt-4 rounded-lg border border-accent-dim bg-accent-dim/15 px-4 py-2.5 text-[0.8rem] leading-relaxed text-dim">
+          <strong className="text-fg">Hosted build.</strong> Everything here is real output from
+          the engine, baked at the twelve measured sensitivity points of the published sweep — so
+          the slider snaps to scored values rather than interpolating. The live perturbation panel
+          at the bottom needs the Python engine and is disabled rather than replayed.
+        </p>
+      )}
 
       <div className="mt-5 flex flex-wrap items-end gap-6">
         <label className="block min-w-64">
